@@ -117,7 +117,7 @@ app.get('/collections', function (req, res) {
   }
   if (db) {
 		var collections = db.getCollectionInfos();
-		res.send(collections);
+		res.send(collections.toString());
   } else {
     res.send('error');
   }
