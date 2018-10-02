@@ -109,6 +109,20 @@ app.get('/pagecount', function (req, res) {
   }
 });
 
+
+app.get('/collections', function (req, res) {
+  // list collections
+  if (!db) {
+    initDb(function(err){});
+  }
+  if (db) {
+		var collections = db.getCollectionInfos();
+		res.send(collections);
+  } else {
+    res.send('error');
+  }
+});
+
 // error handling
 app.use(function(err, req, res, next){
   console.error(err.stack);
