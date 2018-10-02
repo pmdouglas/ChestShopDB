@@ -8,9 +8,9 @@ Object.assign=require('object-assign')
 app.engine('html', require('ejs').renderFile);
 app.use(morgan('combined'))
 
-var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
-    ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0',
-    mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
+var port = process.env.OPENSHIFT_NODEJS_PORT || 8090,
+    ip   = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1',
+    mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || 'mongodb://127.0.0.1:27017/chestshop',
     mongoURLLabel = "";
 
 if (mongoURL == null) {
@@ -70,6 +70,7 @@ var initDb = function(callback) {
     dbDetails.type = 'MongoDB';
 
     console.log('Connected to MongoDB at: %s', mongoURL);
+    console.log('database name: %s', dbDetails.databaseName );
   });
 };
 
@@ -109,15 +110,35 @@ app.get('/pagecount', function (req, res) {
   }
 });
 
+app.get('/maketransaction', function (req, res) {
+  // try to initialize the db on every request if it's not already
+  // initialized.
+  if (!db) {
+    initDb(function(err){});
+  }
+  if (db) {
+    var col = db.collection('transactions');
+    // Create a document with request IP and current time of request
+    col.insert({type: 'sale', amount:1, date: Date.now()});
+    res.send('transaction logged');
+    
+  } else {
+    res.send('error');
+  }
+});
 
-app.get('/collections', function (req, res) {
+app.get('/listtransactions', function (req, res) {
   // list collections
   if (!db) {
     initDb(function(err){});
   }
   if (db) {
-		var collections = db.getCollectionInfos();
-		res.send(collections.toString());
+  	db.collection('transactions', function(err, collection){
+  		collection.find().toArray(function(err, docs){
+  			console.log(docs);
+  			res.render('transactions.html',{transactionsArray: docs});
+  		})
+  	});
   } else {
     res.send('error');
   }
