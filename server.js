@@ -1,12 +1,19 @@
 //  OpenShift sample Node application
 var express = require('express'),
     app     = express(),
-    morgan  = require('morgan');
-    
+    morgan  = require('morgan'),
+    fs = require('fs');
+    bodyParser = require('body-parser');
+		multer  = require('multer');
+		upload  = multer({ dest: __dirname+'/tmp/'});
+		readline = require('readline');
+		
 Object.assign=require('object-assign')
 
 app.engine('html', require('ejs').renderFile);
-app.use(morgan('combined'))
+app.use(morgan('combined'));
+app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8090,
     ip   = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1',
@@ -131,7 +138,7 @@ app.get('/listtransactions', function (req, res) {
   // list collections
   if (!db) {
     initDb(function(err){});
-  }
+  }	
   if (db) {
   	db.collection('transactions', function(err, collection){
   		collection.find().toArray(function(err, docs){
@@ -142,6 +149,27 @@ app.get('/listtransactions', function (req, res) {
   } else {
     res.send('error');
   }
+});
+
+app.get('/getfile', function(req,res){
+	res.render('getfile.html');
+});
+
+app.post('/getfile', upload.single('rawtransactions'), function(req,res){
+	console.log(req.file);
+  console.log(req.file.path);
+  console.log(req.file.type);
+  var file = __dirname + "/" + req.file.name;
+  var rl = readline.createInterface({
+		input: fs.createReadStream(req.file.path),
+    crlfDelay: Infinity
+  });
+  
+  rl.on('line', (line) => {
+	  console.log(`Line from file: ${line}`);
+	});
+  
+  res.end('file read complete');
 });
 
 // error handling
