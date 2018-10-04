@@ -7,7 +7,7 @@ var express = require('express'),
 		multer  = require('multer'),
 		upload  = multer({ dest: __dirname+'/tmp/'}),
 		readline = require('readline'),
-		dataParsing = require(__dirname+'/app/dataParsingMethods'),
+		dataParsingMethods = require(__dirname+'/app/dataParsingMethods'),
 		dbMethods = require(__dirname+'/app/databaseMethods');
 		
 Object.assign=require('object-assign');
@@ -25,8 +25,7 @@ app.get('/', function (req, res) {
 		res.send('Error connecting to Mongo. Message:\n'+err);
 	});
 	// list collections
-	dbMethods.getAllRawTransactions(function(transactions){
-		console.log(transactions);
+	dbMethods.getAllParsedTransactions(function(transactions){
 		res.render('transactions.html',{transactionsArray: transactions});	
 	});
 });
@@ -41,14 +40,23 @@ app.post('/getfile', upload.single('rawtransactions'), function(req,res){
 	});
 	if (req.file != null){
 		dbMethods.clearTransactionTables(function(){
+			var promiseArray = [];
 			var rl = readline.createInterface({
 				input: fs.createReadStream(req.file.path),
 				crlfDelay: Infinity
 			});
 			rl.on('line', (line) => {
-				dbMethods.insertRawTransaction(line);
+				promiseArray.push(dbMethods.insertRawTransaction(line));
 			});
-			res.redirect('/');					
+			rl.on('close', function(){
+				Promise.all(promiseArray).then(values =>{
+					dataParsingMethods.parseAllRawTransactions(function(){
+						dbMethods.getAllParsedTransactions(function(transactions){
+							res.render('transactions.html',{transactionsArray: transactions});	
+						});
+					})				
+				});
+			});
 		});	
 	}else{
 		res.end('no file selected');	

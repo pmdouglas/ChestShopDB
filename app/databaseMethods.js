@@ -1,3 +1,7 @@
+/*
+* declarations
+*/
+
 var mongodb = require('mongodb');
 var db = null;
 var	dbDetails = new Object();
@@ -6,6 +10,9 @@ var transactionsCollection;
 var mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || 'mongodb://127.0.0.1:27017/chestshop';
 var	mongoURLLabel = "";
 
+/*
+* set up uri for mongo based on environment
+*/
 if (mongoURL == null) {
 	var mongoHost, mongoPort, mongoDatabase, mongoPassword, mongoUser;
 	// If using plane old env vars via service discovery
@@ -43,6 +50,12 @@ if (mongoURL == null) {
 	}
 }
 
+/*
+*function name: initDB
+*purpose: initialize db connection
+*input: none
+*ouput: callback
+*/
 function initDb(callback) {
 	if (mongoURL == null) return;
 
@@ -69,6 +82,13 @@ function initDb(callback) {
 	};	
 };
 
+
+/*
+*function name: clearTransactionTables
+*purpose: clear raw and parsed transactions
+*input: none
+*ouput: callback
+*/
 function clearTransactionTables(callback){
 	rawTransactionsCollection.drop(function(err, delok1){
 		if(err) {
@@ -83,26 +103,58 @@ function clearTransactionTables(callback){
 	});
 };
 
+/*
+*function name: getAllRawTransactions
+*purpose: get the list of raw transactions as an array
+*input: none
+*ouput: callback with array of raw transactions
+*/
 function getAllRawTransactions(callback){
 	rawTransactionsCollection.find().toArray(function(err, docs){
-		//console.log(docs);
-		
 		callback(docs);
 	})
 };
-	
-function insertRawTransaction(line){
-	rawTransactionsCollection.insert({type: 'plaintext', text: line});
-};
-	
-function insertParsedTransaction(){
-		return 'hello';	
+
+/*
+*function name: getAllParsedTransactions
+*purpose: get the list of parsed transactions as an array
+*input: none
+*ouput: callback with array of parsed transactions
+*/
+function getAllParsedTransactions(callback){
+	transactionsCollection.find().toArray(function(err, docs){
+		callback(docs);
+	})
 };
 
+/*
+*function name: insertRawTransaction
+*purpose: insert a raw transaction
+*input: raw transaction string
+*ouput: promise object
+*/	
+function insertRawTransaction(line){
+	return rawTransactionsCollection.insert({type: 'plaintext', text: line});
+};
+
+/*
+*function name: insertParsedTransaction
+*purpose: insert a Parsed transaction
+*input: parsed transaction json
+*ouput: promise object
+*/		
+function insertParsedTransaction(transaction){
+	return transactionsCollection.insert(transaction);
+};
+
+/*
+*expose public functions
+*/	
 module.exports = {
 	initDb:initDb,
 	clearTransactionTables:clearTransactionTables,
 	getAllRawTransactions:getAllRawTransactions,
+	getAllParsedTransactions:getAllParsedTransactions,
 	insertRawTransaction:insertRawTransaction,
 	insertParsedTransaction:insertParsedTransaction
 };

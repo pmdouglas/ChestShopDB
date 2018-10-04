@@ -1,7 +1,17 @@
 <a href="/getfile" class="btn btn-default">New File</a>
-<% transactionsArray.forEach(function(transaction, index){ %>
-	<p>
-		<span><%=transaction.type%></span>
-		<span><%=transaction.text%></span>
-	</p>
-<%})%>
+<ol>
+	<% transactionsArray.forEach(function(transaction, index){ %>
+	<li>
+		<span><%= transaction.type ? transaction.type : '' %></span>
+		<ul><span>Date: <%= transaction.date ? transaction.date : '' %></span></ul>
+		<ul><span>Time: <%= transaction.time ? transaction.time : '' %></span></ul>
+		<ul><span>Buyer: <%= transaction.buyer ? transaction.buyer : '' %></span></ul>
+		<ul><span>Seller: <%= transaction.seller ? transaction.seller : '' %></span></ul>
+		<ul><span>Item: <%= transaction.item ? transaction.item : '' %></span></ul>
+		<ul><span>Item Count: <%= transaction.count ? transaction.count : '' %></span></ul>
+		<ul><span>Item Price: <%= transaction.price ? transaction.price : '' %></span></ul>
+		<ul><span>Total: <%= transaction.total ? transaction.total : '' %></span></ul>
+		<ul><span>Text: <%= transaction.text ? transaction.text : '' %></span></ul>
+	</li>
+	<%})%>
+</ol>
