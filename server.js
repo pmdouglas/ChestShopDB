@@ -25,8 +25,10 @@ app.get('/', function (req, res) {
 		res.send('Error connecting to Mongo. Message:\n'+err);
 	});
 	// list collections
-	var transactions = dbMethods.getAllRawTransactions();
-	res.render('transactions.html',{transactionsArray: transactions});
+	dbMethods.getAllRawTransactions(function(transactions){
+		console.log(transactions);
+		res.render('transactions.html',{transactionsArray: transactions});	
+	});
 });
 
 app.get('/getfile', function(req,res){
@@ -38,20 +40,19 @@ app.post('/getfile', upload.single('rawtransactions'), function(req,res){
 		res.send('Error connecting to Mongo. Message:\n'+err);
 	});
 	if (req.file != null){
-		dbMethods.clearTransactionTables();
-		var rl = readline.createInterface({
-			input: fs.createReadStream(req.file.path),
-			crlfDelay: Infinity
-		});
-		rl.on('line', (line) => {
-			dbMethods.insertRawTransaction(line);
-		});				
+		dbMethods.clearTransactionTables(function(){
+			var rl = readline.createInterface({
+				input: fs.createReadStream(req.file.path),
+				crlfDelay: Infinity
+			});
+			rl.on('line', (line) => {
+				dbMethods.insertRawTransaction(line);
+			});
+			res.redirect('/');					
+		});	
 	}else{
 		res.end('no file selected');	
 	}
-
-	//var hello = dataParsing.parseTransaction();
-	res.redirect('/');
 });
 
 // error handling

@@ -1,3 +1,7 @@
+<a href="/getfile" class="btn btn-default">New File</a>
 <% transactionsArray.forEach(function(transaction, index){ %>
-	<p><%=transaction.type%></p>
+	<p>
+		<span><%=transaction.type%></span>
+		<span><%=transaction.text%></span>
+	</p>
 <%})%>

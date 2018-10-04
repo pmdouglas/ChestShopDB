@@ -1,3 +1,4 @@
+var mongodb = require('mongodb');
 var db = null;
 var	dbDetails = new Object();
 var rawTransactionsCollection;
@@ -45,29 +46,30 @@ if (mongoURL == null) {
 function initDb(callback) {
 	if (mongoURL == null) return;
 
-	var mongodb = require('mongodb');
+	
 	if (mongodb == null) return;
+  if (db == null){
+		mongodb.connect(mongoURL, function(err, conn) {
+			if (err) {
+				callback(err);
+				return;
+			}
 
-	mongodb.connect(mongoURL, function(err, conn) {
-		if (err) {
-			callback(err);
-			return;
-		}
+			db = conn;
+			dbDetails.databaseName = db.databaseName;
+			dbDetails.url = mongoURLLabel;
+			dbDetails.type = 'MongoDB';
 
-		db = conn;
-		dbDetails.databaseName = db.databaseName;
-		dbDetails.url = mongoURLLabel;
-		dbDetails.type = 'MongoDB';
-
-		console.log('Connected to MongoDB at: %s', mongoURL);
-		console.log('database name: %s', dbDetails.databaseName );
-		
-		rawTransactionsCollection = db.collection('rawtransactions'); 
-		transactionsCollection = db.collection('transactions'); 
-	});
+			console.log('Connected to MongoDB at: %s', mongoURL);
+			console.log('database name: %s', dbDetails.databaseName );
+			
+			rawTransactionsCollection = db.collection('rawtransactions'); 
+			transactionsCollection = db.collection('transactions'); 
+		});
+	};	
 };
 
-function clearTransactionTables(){
+function clearTransactionTables(callback){
 	rawTransactionsCollection.drop(function(err, delok1){
 		if(err) {
 			console.log(err);
@@ -76,15 +78,16 @@ function clearTransactionTables(){
 			if (err) {
 				console.log(err);
 			};
+			callback();
 		});
 	});
 };
 
-function getAllRawTransactions(){
+function getAllRawTransactions(callback){
 	rawTransactionsCollection.find().toArray(function(err, docs){
-		console.log(docs);
+		//console.log(docs);
 		
-		return docs;
+		callback(docs);
 	})
 };
 	
