@@ -4,17 +4,18 @@
   "description": "Node.js sample app for OpenShift 3",
   "main": "server.js",
   "dependencies": {
+    "body-parser": "",
     "chai": "^3.5.0",
     "chai-http": "^2.0.1",
+    "chart.js": "^2.7.2",
     "ejs": "^2.4.1",
     "express": "^4.13.4",
     "mocha": "^2.4.5",
     "mongodb": "^2.2.33",
     "morgan": "^1.7.0",
-    "object-assign":"4.1.0",
-    "body-parser": "",
-		"multer": "",
-		"readline": ""
+    "multer": "",
+    "object-assign": "4.1.0",
+    "readline": ""
   },
   "engine": {
     "node": "*",
