@@ -1,4 +1,8 @@
-//  OpenShift sample Node application
+//load environment variables
+var dotenv = require('dotenv');
+dotenv.load();
+
+//  dependant modules
 var express = require('express'),
 		app     = express(),
 		morgan  = require('morgan'),
@@ -6,8 +10,10 @@ var express = require('express'),
 		bodyParser = require('body-parser'),
 		multer  = require('multer'),
 		upload  = multer({ dest: __dirname+'/tmp/'}),
-		readline = require('readline'),
-		dataParsingMethods = require(__dirname+'/app/dataParsingMethods'),
+		readline = require('readline')
+		
+// app modules
+var	dataParsingMethods = require(__dirname+'/app/dataParsingMethods'),
 		dbMethods = require(__dirname+'/app/databaseMethods');
 		
 Object.assign=require('object-assign');
@@ -17,8 +23,8 @@ app.use(morgan('combined'));
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 
-var port = process.env.OPENSHIFT_NODEJS_PORT || 8090,
-		ip   = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+var port = process.env.OPENSHIFT_NODEJS_PORT ||process.env.NODEJS_PORT,
+		ip   = process.env.OPENSHIFT_NODEJS_IP || process.env.NODEJS_IP;
 		
 app.get('/', function (req, res) {
 	dbMethods.initDb(function(err){
@@ -77,7 +83,7 @@ dbMethods.initDb(function(err){
 	console.log('Error connecting to Mongo. Message:\n'+err);
 });
 
-app.listen(port, ip);
+app.listen(port,ip);
 console.log('Server running on http://%s:%s', ip, port);
 
 module.exports = app ;

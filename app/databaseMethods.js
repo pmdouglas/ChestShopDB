@@ -1,3 +1,7 @@
+//load environment variables
+//var dotenv = require('dotenv');
+//dotenv.load();
+
 /*
 * declarations
 */
@@ -7,7 +11,7 @@ var db = null;
 var	dbDetails = new Object();
 var rawTransactionsCollection;
 var transactionsCollection; 
-var mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || 'mongodb://127.0.0.1:27017/chestshop';
+var mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGODB_DB_URL;
 var	mongoURLLabel = "";
 
 /*
