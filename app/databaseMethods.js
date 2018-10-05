@@ -13,8 +13,7 @@ var rawTransactionsCollection;
 var transactionsCollection; 
 var mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGODB_DB_URL;
 var	mongoURLLabel = "";
-console.log("*******mongoURL:"+mongoURL);
-console.log("*******process.env.MONGODB_DB_URL:"+process.env.MONGODB_DB_URL);
+
 /*
 * set up uri for mongo based on environment
 */
@@ -54,6 +53,9 @@ if (mongoURL == null) {
 		mongoURL += mongoHost + ':' +  mongoPort + '/' + mongoDatabase;
 	}
 }
+
+console.log("*******mongoURL:"+mongoURL);
+console.log("*******process.env.MONGODB_DB_URL:"+process.env.MONGODB_DB_URL);
 
 /*
 *function name: initDB
