@@ -66,7 +66,7 @@ function initDb(callback) {
 	};
 
 	if (mongodb == null){
-		callback(Error('mongodb is null'))P;
+		callback(Error('mongodb is null'));
 	};
 	
   if (db == null){
