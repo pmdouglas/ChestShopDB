@@ -1,7 +1,3 @@
-//load environment variables
-var dotenv = require('dotenv');
-dotenv.load();
-
 /*
 * declarations
 */
@@ -56,6 +52,8 @@ if (mongoURL == null) {
 
 console.log("*******mongoURL:"+mongoURL);
 console.log("*******process.env.MONGODB_DB_URL:"+process.env.MONGODB_DB_URL);
+console.log("*******process.env.DATABASE_SERVICE_NAME:"+process.env.DATABASE_SERVICE_NAME);
+
 
 /*
 *function name: initDB
