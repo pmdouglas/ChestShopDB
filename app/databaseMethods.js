@@ -13,7 +13,8 @@ var rawTransactionsCollection;
 var transactionsCollection; 
 var mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGODB_DB_URL;
 var	mongoURLLabel = "";
-
+console.log("*******mongoURL:"+mongoURL);
+console.log("*******process.env.MONGODB_DB_URL:"+process.env.MONGODB_DB_URL);
 /*
 * set up uri for mongo based on environment
 */
@@ -63,10 +64,12 @@ if (mongoURL == null) {
 function initDb(callback) {
 	if (mongoURL == null){
 		callback(Error('mongoURL is null'));
+		return;
 	};
 
 	if (mongodb == null){
 		callback(Error('mongodb is null'));
+		return;
 	};
 	
   if (db == null){
