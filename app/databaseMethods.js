@@ -61,10 +61,14 @@ if (mongoURL == null) {
 *ouput: callback
 */
 function initDb(callback) {
-	if (mongoURL == null) return;
+	if (mongoURL == null){
+		callback(Error('mongoURL is null'));
+	};
 
+	if (mongodb == null){
+		callback(Error('mongodb is null'))P;
+	};
 	
-	if (mongodb == null) return;
   if (db == null){
 		mongodb.connect(mongoURL, function(err, conn) {
 			if (err) {
