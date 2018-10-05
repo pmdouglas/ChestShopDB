@@ -1,6 +1,6 @@
 //load environment variables
-//var dotenv = require('dotenv');
-//dotenv.load();
+var dotenv = require('dotenv');
+dotenv.load();
 
 /*
 * declarations
