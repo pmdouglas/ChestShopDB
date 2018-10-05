@@ -25,10 +25,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 var port = process.env.NODEJS_PORT||process.env.OPENSHIFT_NODEJS_PORT ||8080,
 		ip   = process.env.NODEJS_IP || process.env.OPENSHIFT_NODEJS_IP||'0.0.0.0';
-		
-console.log("*******process.env.MONGODB_DB_URL:"+process.env.MONGODB_DB_URL);
-console.log("*******process.env.DATABASE_SERVICE_NAME:"+process.env.DATABASE_SERVICE_NAME);
-console.log(process.env);
 
 app.get('/', function (req, res) {
 	dbMethods.initDb(function(err){
